@@ -1,0 +1,2 @@
+video_test_move(0x81af67c, 200, 400, 700, 400, 5, 60): under construction
+O bacalhau caralho
