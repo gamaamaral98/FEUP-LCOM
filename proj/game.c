@@ -44,16 +44,16 @@ Game* start_game(){
     //Putting in the game player_block the player_tile
     game->player_block[0] = *player_tile;
 
+    game->state = 0;
+
+    game->size = 1;
+
     if(subscribe(game) != 0) return NULL;
 
     return game;
 
 }
 
-/*
-    Draw game simply draws the board with the colors and player options according to the game argument.
-    Set to be called everytime there is a change.
-*/
 void draw_game(Game *game){
 
     uint16_t height = (uint16_t) HEIGHT, width = (uint16_t) WIDTH;
@@ -104,9 +104,97 @@ int unsubscribe(){
     
 }
 
+void handle_key(Game *game){
+    switch(value){
+        case BLUE:
+
+            for(int i = 0; i < game->size; i++){
+
+                if(game->player_block[i].color == 1) continue;
+
+                game->player_block[i].color = 1;
+                game->color_map[game->player_block[i].x][game->player_block[i].y].color = game->player_block[i].color;
+            }
+
+            draw_game(game);
+            break;
+        case GREEN:
+
+            for(int i = 0; i < game->size; i++){
+
+                if(game->player_block[i].color == 2) continue;
+
+                game->player_block[i].color = 2;
+                game->color_map[game->player_block[i].x][game->player_block[i].y].color = game->player_block[i].color;
+            }
+
+            draw_game(game);
+            break;
+
+        case CYAN:
+
+            for(int i = 0; i < game->size; i++){
+
+                if(game->player_block[i].color == 3) continue;
+
+                game->player_block[i].color = 3;
+                game->color_map[game->player_block[i].x][game->player_block[i].y].color = game->player_block[i].color;
+            }
+
+            draw_game(game);
+            break;
+
+        case RED:
+
+            for(int i = 0; i < game->size; i++){
+
+                if(game->player_block[i].color == 4) continue;
+
+                game->player_block[i].color = 4;
+                game->color_map[game->player_block[i].x][game->player_block[i].y].color = game->player_block[i].color;
+            }
+
+            draw_game(game);
+            break;
+
+        case PURPLE:
+
+            for(int i = 0; i < game->size; i++){
+
+                if(game->player_block[i].color == 5) continue;
+
+                game->player_block[i].color = 5;
+                game->color_map[game->player_block[i].x][game->player_block[i].y].color = game->player_block[i].color;
+            }
+
+            draw_game(game);
+            break;
+
+        case YELLOW:
+
+            for(int i = 0; i < game->size; i++){
+
+                if(game->player_block[i].color == 6) continue;
+
+                game->player_block[i].color = 6;
+                game->color_map[game->player_block[i].x][game->player_block[i].y].color = game->player_block[i].color;
+            }
+
+            draw_game(game);
+            break;
+
+        default:
+            break;
+    
+    }
+}
+
 void play_game(Game *game){
 
-    draw_game(game);
+    //COLOCAR AQUI FUNÇÃO QUE DÁ DRAW DAS SPRITES:
+    //  1. LOGO DO JOGO
+    //  2. START GAME
+    //  3. EXIT GAME
 
     //CHECK FOR INTERRUPTS
     int ipc_status;
@@ -114,7 +202,7 @@ void play_game(Game *game){
 	int r;
     
     //MIGHT CHANGE THE CONDITION
-    while (value != ESC_BREAK_CODE) {
+    while (value != ESC_BREAK_CODE && game->state != 2) {
 
         if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
             printf("driver_receive failed with: %d", r);
@@ -137,6 +225,18 @@ void play_game(Game *game){
                     //KEYBOARD INTERRUPT
                     if (msg.m_notify.interrupts & game->irq_kbd) {
                         kbc_ih();
+
+                        if(game->state == 0){
+                            if(value == START_GAME){
+                                game->state = 1;
+                                draw_game(game);
+                            }else if(value == EXIT_GAME){
+                                game->state = 2;
+                                break;
+                            }
+                        } else if(game->state == 1){
+                            handle_key(game);
+                        }
                     }
                     break;
                 default:
