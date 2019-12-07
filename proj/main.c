@@ -38,8 +38,12 @@ int (proj_main_loop)(int argc, char *argv[]) {
 
   Game *game = start_game();
   play_game(game);
-  //end_game();
 
+  //CLEAR BUFFERS
+  timer_int_handler();
+  kbc_ih();
+
+  //UNSUBSCRIBE DEVICES
   if(unsubscribe() != 0) return 1;
 
   if(vg_exit() != 0) return 1;

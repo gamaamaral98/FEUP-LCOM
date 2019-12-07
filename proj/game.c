@@ -21,32 +21,18 @@ Game* start_game(){
             tile->x = x * WIDTH;
             tile->y = y * HEIGHT;
             tile->color = rand() % 7;
+            if(tile->x == 0 && tile->y == 0) tile->player = true;
+            else tile->player = false;
 
             if(tile->color == 0) tile->color++;
 
-            game->color_map[y][x] = *tile;
+            game->color_map[x][y] = *tile;
 
         }
 
     }
 
-    //Initializing the player block, which always corresponds to position 0, 0
-    Tile* player_tile = (Tile*) malloc(sizeof(Tile));
-    if(player_tile == NULL) return NULL;
-
-    player_tile->x = 0;
-    player_tile->y = 0;
-    player_tile->height = HEIGHT;
-    player_tile->width = WIDTH;
-    player_tile->color = rand() % 7;
-    if(player_tile->color == 0) player_tile->color++;
-
-    //Putting in the game player_block the player_tile
-    game->player_block[0] = *player_tile;
-
     game->state = 0;
-
-    game->size = 1;
 
     if(subscribe(game) != 0) return NULL;
 
@@ -107,86 +93,81 @@ int unsubscribe(){
 void handle_key(Game *game){
     switch(value){
         case BLUE:
-
-            for(int i = 0; i < game->size; i++){
-
-                if(game->player_block[i].color == 1) continue;
-
-                game->player_block[i].color = 1;
-                game->color_map[game->player_block[i].x][game->player_block[i].y].color = game->player_block[i].color;
+            for(int i = 0; i < ROW; i++){
+                for(int j = 0; j < COL; j++){
+                    if(game->color_map[j][i].player) game->color_map[j][i].color = 1;
+                }
             }
-
             draw_game(game);
             break;
         case GREEN:
-
-            for(int i = 0; i < game->size; i++){
-
-                if(game->player_block[i].color == 2) continue;
-
-                game->player_block[i].color = 2;
-                game->color_map[game->player_block[i].x][game->player_block[i].y].color = game->player_block[i].color;
+            for(int i = 0; i < ROW; i++){
+                for(int j = 0; j < COL; j++){
+                    if(game->color_map[j][i].player) game->color_map[j][i].color = 2;
+                }
             }
-
             draw_game(game);
             break;
-
         case CYAN:
-
-            for(int i = 0; i < game->size; i++){
-
-                if(game->player_block[i].color == 3) continue;
-
-                game->player_block[i].color = 3;
-                game->color_map[game->player_block[i].x][game->player_block[i].y].color = game->player_block[i].color;
+            for(int i = 0; i < ROW; i++){
+                for(int j = 0; j < COL; j++){
+                    if(game->color_map[j][i].player) game->color_map[j][i].color = 3;
+                }
             }
-
             draw_game(game);
             break;
-
         case RED:
-
-            for(int i = 0; i < game->size; i++){
-
-                if(game->player_block[i].color == 4) continue;
-
-                game->player_block[i].color = 4;
-                game->color_map[game->player_block[i].x][game->player_block[i].y].color = game->player_block[i].color;
+            for(int i = 0; i < ROW; i++){
+                for(int j = 0; j < COL; j++){
+                    if(game->color_map[j][i].player) game->color_map[j][i].color = 4;
+                }
             }
-
             draw_game(game);
             break;
-
         case PURPLE:
-
-            for(int i = 0; i < game->size; i++){
-
-                if(game->player_block[i].color == 5) continue;
-
-                game->player_block[i].color = 5;
-                game->color_map[game->player_block[i].x][game->player_block[i].y].color = game->player_block[i].color;
+            for(int i = 0; i < ROW; i++){
+                for(int j = 0; j < COL; j++){
+                    if(game->color_map[j][i].player) game->color_map[j][i].color = 5;
+                }
             }
-
             draw_game(game);
             break;
-
         case YELLOW:
-
-            for(int i = 0; i < game->size; i++){
-
-                if(game->player_block[i].color == 6) continue;
-
-                game->player_block[i].color = 6;
-                game->color_map[game->player_block[i].x][game->player_block[i].y].color = game->player_block[i].color;
+            for(int i = 0; i < ROW; i++){
+                for(int j = 0; j < COL; j++){
+                    if(game->color_map[j][i].player) game->color_map[j][i].color = 6;
+                }
             }
-
             draw_game(game);
             break;
-
         default:
             break;
     
     }
+
+    calculate_player_block(game);
+}
+
+void calculate_player_block(Game *game){
+    for(int i = 0; i < ROW; i++){
+        for(int j = 0; j < COL; j++){
+            if(game->color_map[j][i].player){
+                if(game->color_map[j-1][i].color == game->color_map[j][i].color && j-1 >= 0 && j-1 <= 9) game->color_map[j-1][i].player = true;
+                if(game->color_map[j+1][i].color == game->color_map[j][i].color && j+1 >= 0 && j+1 <= 9) game->color_map[j+1][i].player = true;
+                if(game->color_map[j][i-1].color == game->color_map[j][i].color && i-1 >= 0 && i-1 <= 9) game->color_map[j][i-1].player = true;
+                if(game->color_map[j][i+1].color == game->color_map[j][i].color && i+1 >= 0 && i+1 <= 9) game->color_map[j][i+1].player = true;
+            }
+        }
+    }
+}
+
+void game_finished(Game *game){
+    for(int i = 0; i < ROW; i++){
+        for(int j = 0; j < COL; j++){
+            if(game->color_map[j][i].player == false) return;
+        }
+    }
+    game->state = 2;
 }
 
 void play_game(Game *game){
@@ -218,7 +199,7 @@ void play_game(Game *game){
                     if (msg.m_notify.interrupts & game->irq_timer) {
                         timer_int_handler();
                         if(global_timer_counter % 60 == 0){
-                            printf("1 SEGUNDO PASSOU\n");
+                            //CODE
                         }
                     }
 
@@ -237,7 +218,9 @@ void play_game(Game *game){
                         } else if(game->state == 1){
                             handle_key(game);
                         }
+
                     }
+                    game_finished(game);
                     break;
                 default:
                     break;
@@ -245,7 +228,6 @@ void play_game(Game *game){
         } else {
           //Do nothing.
         }  
-    
     }
 
 }

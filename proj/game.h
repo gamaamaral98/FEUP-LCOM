@@ -27,19 +27,23 @@ struct tile {
     int width;
     int height;
     int color;
+
+    bool player;
 };
 typedef struct tile Tile;
 
 struct game {
     Tile color_map[COL][ROW];
-    Tile player_block[MAX_NUMBER_TILES];
-    int size;
 
     //Subscribe interrupts
     int irq_timer, irq_kbd; 
     int state; //State 0 MENU, state 1 PLAY GAME, state 2 EXIT GAME
 };
 typedef struct game Game;
+
+void calculate_player_block(Game *game);
+
+void game_finished(Game *game);
 
 int subscribe(Game *game);
 
