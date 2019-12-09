@@ -1,6 +1,7 @@
 #include <lcom/lcf.h>
 #include "graphics.h"
 #include "keyboard.h"
+#include "sprite.h"
 
 #define MAX_NUMBER_TILES 100
 #define COL 10

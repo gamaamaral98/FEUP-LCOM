@@ -15,7 +15,7 @@ static unsigned BlueFieldPosition;   /* bit position of lsb of blue mask */
 static unsigned MemoryModel;        /**< @brief memory model type */
 
 static void *video_mem;         /* frame-buffer VM address (static global variable*/ 
- 
+
 void clear_screen(){
  
     //vg_draw_rectangle(0,0,h_res,v_res,0);

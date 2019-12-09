@@ -36,11 +36,24 @@ Game* start_game(){
 
     if(subscribe(game) != 0) return NULL;
 
+    //GAME LOGO
+    draw_xpm(game_logo, 350, 100);
+
+    //GAME OPTIONS
+
+    draw_xpm(x1, 390, 300);
+    draw_xpm(startG, 460, 305);
+    
+    draw_xpm(x2, 390, 400);
+    draw_xpm(out, 445, 400);
+
     return game;
 
 }
 
 void draw_game(Game *game){
+
+    if(game->state == 1) draw_xpm(game_logo, 350, 5);
 
     uint16_t height = (uint16_t) HEIGHT, width = (uint16_t) WIDTH;
 
@@ -168,19 +181,16 @@ void game_finished(Game *game){
         }
     }
     game->state = 2;
+    sleep(2);
 }
 
 void play_game(Game *game){
-
-    //COLOCAR AQUI FUNÇÃO QUE DÁ DRAW DAS SPRITES:
-    //  1. LOGO DO JOGO
-    //  2. START GAME
-    //  3. EXIT GAME
 
     //CHECK FOR INTERRUPTS
     int ipc_status;
 	message msg;
 	int r;
+    int counter_min = 0, counter_sec = 0, counter_sec_aux = 0;
     
     //MIGHT CHANGE THE CONDITION
     while (value != ESC_BREAK_CODE && game->state != 2) {
@@ -198,8 +208,47 @@ void play_game(Game *game){
                     //TIMER INTERRUPT
                     if (msg.m_notify.interrupts & game->irq_timer) {
                         timer_int_handler();
-                        if(global_timer_counter % 60 == 0){
-                            //CODE
+                        if((global_timer_counter % 60 == 0) && game->state == 1){
+
+                            counter_sec_aux++;
+                            if(counter_sec_aux > 9){
+                                counter_sec++;
+                                counter_sec_aux = 0;
+                            }
+                            if(counter_sec == 6){
+                                counter_sec = 0;
+                                counter_min++;
+                            }
+                            
+                            if(counter_sec_aux == 0) draw_xpm(x0, 950, 100);
+                            if(counter_sec_aux == 1) draw_xpm(x1, 950, 100);
+                            if(counter_sec_aux == 2) draw_xpm(x2, 950, 100);
+                            if(counter_sec_aux == 3) draw_xpm(x3, 950, 100);
+                            if(counter_sec_aux == 4) draw_xpm(x4, 950, 100);
+                            if(counter_sec_aux == 5) draw_xpm(x5, 950, 100);
+                            if(counter_sec_aux == 6) draw_xpm(x6, 950, 100);
+                            if(counter_sec_aux == 7) draw_xpm(x7, 950, 100);
+                            if(counter_sec_aux == 8) draw_xpm(x8, 950, 100);
+                            if(counter_sec_aux == 9) draw_xpm(x9, 950, 100);
+
+                            if(counter_sec == 0) draw_xpm(x0, 900, 100);
+                            if(counter_sec == 1) draw_xpm(x1, 900, 100);
+                            if(counter_sec == 2) draw_xpm(x2, 900, 100);
+                            if(counter_sec == 3) draw_xpm(x3, 900, 100);
+                            if(counter_sec == 4) draw_xpm(x4, 900, 100);
+                            if(counter_sec == 5) draw_xpm(x5, 900, 100);
+
+                            if(counter_min == 0) draw_xpm(x0, 825, 100);
+                            if(counter_min == 1) draw_xpm(x1, 825, 100);
+                            if(counter_min == 2) draw_xpm(x2, 825, 100);
+                            if(counter_min == 3) draw_xpm(x3, 825, 100);
+                            if(counter_min == 4) draw_xpm(x4, 825, 100);
+                            if(counter_min == 5) draw_xpm(x5, 825, 100);
+                            if(counter_min == 6) draw_xpm(x6, 825, 100);
+                            if(counter_min == 7) draw_xpm(x7, 825, 100);
+                            if(counter_min == 8) draw_xpm(x8, 825, 100);
+                            if(counter_min == 9) draw_xpm(x9, 825, 100);
+                            
                         }
                     }
 
@@ -210,6 +259,7 @@ void play_game(Game *game){
                         if(game->state == 0){
                             if(value == START_GAME){
                                 game->state = 1;
+                                clear_screen();
                                 draw_game(game);
                             }else if(value == EXIT_GAME){
                                 game->state = 2;
