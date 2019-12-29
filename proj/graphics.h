@@ -39,3 +39,5 @@ int draw_xpm(xpm_map_t xpm, uint16_t x, uint16_t y);
 int (my_vbe_get_mode_info)(uint16_t mode, vbe_mode_info_t *vmi_p);
 
 void clear_screen();
+
+int draw_sprite(uint8_t *sprite, xpm_image_t img, uint16_t x, uint16_t y);

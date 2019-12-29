@@ -83,6 +83,34 @@ int draw_xpm(xpm_map_t xpm, uint16_t x, uint16_t y){
 
 }
 
+int draw_sprite(uint8_t *sprite, xpm_image_t img, uint16_t x, uint16_t y){
+
+    unsigned int i = 0;
+
+    while(i < img.height){
+
+        if((i + y) > v_res) return 1;
+
+        unsigned int j = 0;
+
+        while(j < img.width){
+
+            if((j + x) > h_res) return 1; 
+
+            unsigned int index = i * img.width + j;
+            fill_pixel(x+j, y+i, sprite[index]);
+
+            j++;
+        }
+
+        i++;
+
+    }
+
+    return 0;
+
+}
+
 uint16_t handle_height(uint16_t x, uint16_t y, uint16_t height){
     if(y <= v_res && x <= h_res){
         if(y + height > v_res) return v_res - y;

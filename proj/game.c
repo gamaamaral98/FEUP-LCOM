@@ -191,6 +191,28 @@ void play_game(Game *game){
 	message msg;
 	int r;
     int counter_min = 0, counter_sec = 0, counter_sec_aux = 0;
+
+    //LOAD XPMS
+    xpm_image_t img0;
+    uint8_t *sprite0 = xpm_load(x0, XPM_INDEXED, &img0);
+    xpm_image_t img1;
+    uint8_t *sprite1 = xpm_load(x1, XPM_INDEXED, &img1);
+    xpm_image_t img2;
+    uint8_t *sprite2 = xpm_load(x2, XPM_INDEXED, &img2);
+    xpm_image_t img3;
+    uint8_t *sprite3 = xpm_load(x3, XPM_INDEXED, &img3);
+    xpm_image_t img4;
+    uint8_t *sprite4 = xpm_load(x4, XPM_INDEXED, &img4);
+    xpm_image_t img5;
+    uint8_t *sprite5 = xpm_load(x5, XPM_INDEXED, &img5);
+    xpm_image_t img6;
+    uint8_t *sprite6 = xpm_load(x6, XPM_INDEXED, &img6);
+    xpm_image_t img7;
+    uint8_t *sprite7 = xpm_load(x7, XPM_INDEXED, &img7);
+    xpm_image_t img8;
+    uint8_t *sprite8 = xpm_load(x8, XPM_INDEXED, &img8);
+    xpm_image_t img9;
+    uint8_t *sprite9 = xpm_load(x9, XPM_INDEXED, &img9);
     
     //MIGHT CHANGE THE CONDITION
     while (value != ESC_BREAK_CODE && game->state != 2) {
@@ -220,35 +242,34 @@ void play_game(Game *game){
                                 counter_min++;
                             }
                             
-                            if(counter_sec_aux == 0) draw_xpm(x0, 950, 100);
-                            if(counter_sec_aux == 1) draw_xpm(x1, 950, 100);
-                            if(counter_sec_aux == 2) draw_xpm(x2, 950, 100);
-                            if(counter_sec_aux == 3) draw_xpm(x3, 950, 100);
-                            if(counter_sec_aux == 4) draw_xpm(x4, 950, 100);
-                            if(counter_sec_aux == 5) draw_xpm(x5, 950, 100);
-                            if(counter_sec_aux == 6) draw_xpm(x6, 950, 100);
-                            if(counter_sec_aux == 7) draw_xpm(x7, 950, 100);
-                            if(counter_sec_aux == 8) draw_xpm(x8, 950, 100);
-                            if(counter_sec_aux == 9) draw_xpm(x9, 950, 100);
+                            if(counter_sec_aux == 0) draw_sprite(sprite0, img0, 950, 100);
+                            if(counter_sec_aux == 1) draw_sprite(sprite1, img1, 950, 100);
+                            if(counter_sec_aux == 2) draw_sprite(sprite2, img2, 950, 100);
+                            if(counter_sec_aux == 3) draw_sprite(sprite3, img3, 950, 100);
+                            if(counter_sec_aux == 4) draw_sprite(sprite4, img4, 950, 100);
+                            if(counter_sec_aux == 5) draw_sprite(sprite5, img5, 950, 100);
+                            if(counter_sec_aux == 6) draw_sprite(sprite6, img6, 950, 100);
+                            if(counter_sec_aux == 7) draw_sprite(sprite7, img7, 950, 100);
+                            if(counter_sec_aux == 8) draw_sprite(sprite8, img8, 950, 100);
+                            if(counter_sec_aux == 9) draw_sprite(sprite9, img9, 950, 100);
 
-                            if(counter_sec == 0) draw_xpm(x0, 900, 100);
-                            if(counter_sec == 1) draw_xpm(x1, 900, 100);
-                            if(counter_sec == 2) draw_xpm(x2, 900, 100);
-                            if(counter_sec == 3) draw_xpm(x3, 900, 100);
-                            if(counter_sec == 4) draw_xpm(x4, 900, 100);
-                            if(counter_sec == 5) draw_xpm(x5, 900, 100);
+                            if(counter_sec == 0) draw_sprite(sprite0, img0,900, 100);
+                            if(counter_sec == 1) draw_sprite(sprite1, img1,900, 100);
+                            if(counter_sec == 2) draw_sprite(sprite2, img2,900, 100);
+                            if(counter_sec == 3) draw_sprite(sprite3, img3,900, 100);
+                            if(counter_sec == 4) draw_sprite(sprite4, img4,900, 100);
+                            if(counter_sec == 5) draw_sprite(sprite5, img5,900, 100);
 
-                            if(counter_min == 0) draw_xpm(x0, 825, 100);
-                            if(counter_min == 1) draw_xpm(x1, 825, 100);
-                            if(counter_min == 2) draw_xpm(x2, 825, 100);
-                            if(counter_min == 3) draw_xpm(x3, 825, 100);
-                            if(counter_min == 4) draw_xpm(x4, 825, 100);
-                            if(counter_min == 5) draw_xpm(x5, 825, 100);
-                            if(counter_min == 6) draw_xpm(x6, 825, 100);
-                            if(counter_min == 7) draw_xpm(x7, 825, 100);
-                            if(counter_min == 8) draw_xpm(x8, 825, 100);
-                            if(counter_min == 9) draw_xpm(x9, 825, 100);
-                            
+                            if(counter_min == 0) draw_sprite(sprite0, img0, 825, 100);
+                            if(counter_min == 1) draw_sprite(sprite1, img1, 825, 100);
+                            if(counter_min == 2) draw_sprite(sprite2, img2, 825, 100);
+                            if(counter_min == 3) draw_sprite(sprite3, img3, 825, 100);
+                            if(counter_min == 4) draw_sprite(sprite4, img4, 825, 100);
+                            if(counter_min == 5) draw_sprite(sprite5, img5, 825, 100);
+                            if(counter_min == 6) draw_sprite(sprite6, img6, 825, 100);
+                            if(counter_min == 7) draw_sprite(sprite7, img7, 825, 100);
+                            if(counter_min == 8) draw_sprite(sprite8, img8, 825, 100);
+                            if(counter_min == 9) draw_sprite(sprite9, img9, 825, 100);                       
                         }
                     }
 
