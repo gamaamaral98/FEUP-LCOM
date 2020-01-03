@@ -14,6 +14,10 @@
 
 #define MODE 0x105
 
+void double_buffer_cpy();
+
+void clear_double_buffer();
+
 void *(vg_init)(uint16_t mode);
 
 int (set_graph)(uint16_t mode);

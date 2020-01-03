@@ -50,6 +50,8 @@ Game* start_game(){
     draw_xpm(x2, 390, 400);
     draw_xpm(out, 445, 400);
 
+    double_buffer_cpy();
+
     return game;
 
 }
@@ -81,6 +83,8 @@ void draw_game(Game *game){
 
         vg_draw_rectangle(x + (width * i) + 44 * i, y, width, height, (uint32_t) i+1);
     }
+
+    double_buffer_cpy();
 
 }
 
@@ -229,6 +233,12 @@ void play_game(Game *game){
     uint8_t *sprite9 = xpm_load(x9, XPM_INDEXED, &img9);
     xpm_image_t cursor_img;
     uint8_t *sprite_cursor = xpm_load(cross_game, XPM_INDEXED, &cursor_img);
+    xpm_image_t img_game;
+    uint8_t *startGame = xpm_load(startG, XPM_INDEXED, &img_game);
+    xpm_image_t img_exit;
+    uint8_t *exitGame = xpm_load(out, XPM_INDEXED, &img_exit);
+    xpm_image_t img_logo;
+    uint8_t *logo = xpm_load(game_logo, XPM_INDEXED, &img_logo);
     
     //MIGHT CHANGE THE CONDITION
     while (value != ESC_BREAK_CODE && game->state != 2) {
@@ -268,6 +278,7 @@ void play_game(Game *game){
                             if(counter_sec_aux == 7) draw_sprite(sprite7, img7, 950, 100);
                             if(counter_sec_aux == 8) draw_sprite(sprite8, img8, 950, 100);
                             if(counter_sec_aux == 9) draw_sprite(sprite9, img9, 950, 100);
+                            double_buffer_cpy();
 
                             if(counter_sec == 0) draw_sprite(sprite0, img0,900, 100);
                             if(counter_sec == 1) draw_sprite(sprite1, img1,900, 100);
@@ -275,6 +286,7 @@ void play_game(Game *game){
                             if(counter_sec == 3) draw_sprite(sprite3, img3,900, 100);
                             if(counter_sec == 4) draw_sprite(sprite4, img4,900, 100);
                             if(counter_sec == 5) draw_sprite(sprite5, img5,900, 100);
+                            double_buffer_cpy();
 
                             if(counter_min == 0) draw_sprite(sprite0, img0, 825, 100);
                             if(counter_min == 1) draw_sprite(sprite1, img1, 825, 100);
@@ -285,7 +297,8 @@ void play_game(Game *game){
                             if(counter_min == 6) draw_sprite(sprite6, img6, 825, 100);
                             if(counter_min == 7) draw_sprite(sprite7, img7, 825, 100);
                             if(counter_min == 8) draw_sprite(sprite8, img8, 825, 100);
-                            if(counter_min == 9) draw_sprite(sprite9, img9, 825, 100);                       
+                            if(counter_min == 9) draw_sprite(sprite9, img9, 825, 100); 
+                            double_buffer_cpy();                      
                         }
                     }
 
@@ -297,6 +310,7 @@ void play_game(Game *game){
                             if(value == START_GAME){
                                 game->state = 1;
                                 clear_screen();
+                                clear_double_buffer();
                                 draw_game(game);
                             }else if(value == EXIT_GAME){
                                 game->state = 2;
@@ -319,24 +333,31 @@ void play_game(Game *game){
                             index++;
 
                             if(index == 3){
-
+                                clear_screen();
+                                clear_double_buffer();
                                 struct packet mouse_packet;
                                 packet_parser(&mouse_packet, mouse_scancodes);
 
                                 index = 0;
 
-                                //int aux_x = game->cursor_x;
-                                //int aux_y = game->cursor_y;
                                 game->cursor_x += mouse_packet.delta_x;
                                 game->cursor_y -= mouse_packet.delta_y;
 
-                                //vg_draw_rectangle(aux_x, aux_y, cursor_img.width, cursor_img.height, 0);
+                                //GAME LOGO
+                                draw_sprite(logo, img_logo, 350, 100);
+                                //GAME OPTIONS
+                                draw_sprite(sprite1, img1, 390, 300);
+                                draw_sprite(startGame, img_game, 460, 305);
+                                draw_sprite(sprite2, img2, 390, 400);
+                                draw_sprite(exitGame, img_exit, 445, 400);
 
                                 draw_sprite(sprite_cursor, cursor_img, game->cursor_x, game->cursor_y);
+                                double_buffer_cpy();
 
                                 if(mouse_packet.lb && game->cursor_x >= 390 && game->cursor_x < 450 && game->cursor_y >= 300 && game->cursor_y < 399){
                                     game->state = 1;
                                     clear_screen();
+                                    clear_double_buffer();
                                     draw_game(game);
                                 } else if(mouse_packet.lb && game->cursor_x >= 390 && game->cursor_x < 450 && game->cursor_y >= 400 && game->cursor_y < 500){
                                     game->state = 2;

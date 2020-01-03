@@ -15,6 +15,17 @@ static unsigned BlueFieldPosition;   /* bit position of lsb of blue mask */
 static unsigned MemoryModel;        /**< @brief memory model type */
 
 static void *video_mem;         /* frame-buffer VM address (static global variable*/ 
+static void *double_buffer;
+
+void double_buffer_cpy() {
+    memcpy(video_mem, double_buffer, h_res*v_res*bytes_per_pixel);
+}
+
+void clear_double_buffer(){
+ 
+  memset(double_buffer, 0, h_res*v_res*bytes_per_pixel);
+
+}
 
 void clear_screen(){
  
@@ -197,7 +208,7 @@ int (vg_draw_hline)(uint16_t x, uint16_t y, uint16_t len, uint32_t color){
 }
 
 int (fill_pixel)(uint16_t x, uint16_t y, uint32_t color){
-    uint8_t *video_mem_aux = video_mem;
+    uint8_t *video_mem_aux = double_buffer;
 
     //Ir para a posição do pixel
     video_mem_aux = video_mem_aux + (h_res * bytes_per_pixel * y);
@@ -274,6 +285,8 @@ void *(vg_init)(uint16_t mode){
             panic("couldn't map video memory");
             return NULL;    
         }
+
+        double_buffer = malloc(vram_size);
 
         if(vbe_linear_mode(mode) != 0) return NULL;
 
