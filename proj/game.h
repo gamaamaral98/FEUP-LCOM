@@ -2,6 +2,7 @@
 #include "graphics.h"
 #include "keyboard.h"
 #include "sprite.h"
+#include "mouse.h"
 
 #define MAX_NUMBER_TILES 100
 #define COL 10
@@ -37,7 +38,9 @@ struct game {
     Tile color_map[COL][ROW];
 
     //Subscribe interrupts
-    int irq_timer, irq_kbd; 
+    int irq_timer, irq_kbd, irq_mouse;
+    int cursor_x; 
+    int cursor_y; 
     int state; //State 0 MENU, state 1 PLAY GAME, state 2 EXIT GAME
 };
 typedef struct game Game;

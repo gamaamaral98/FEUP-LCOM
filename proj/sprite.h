@@ -18,3 +18,4 @@
 #include "xpms/exit.h"
 #include "xpms/logo.h"
 #include "xpms/point.h"
+#include "xpms/cursor.h"

@@ -5,8 +5,6 @@
 int kbc_hook_id = 2;
 uint32_t value = 0;
 
-bool err = false;
-
 int sys_inb_count(int port, uint8_t *value) {
    
     return util_sys_inb(port, value);
@@ -55,7 +53,6 @@ void (kbc_ih)() {
                 count++;
 
                 if ((status & (PAR_ERR | TO_ERR)) == 0) break;
-                else err = true;
 
             } else break;
    
@@ -83,7 +80,6 @@ void (kbc_poll)() {
                 count++;
 
                 if ((status & (PAR_ERR | TO_ERR)) == 0) break;
-                else err = true;
 
             } else break;
    

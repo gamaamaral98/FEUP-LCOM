@@ -8,7 +8,6 @@
 #define DELAY_US    20000
 #define ESC_BREAK_CODE  0x81
 #define OUT_BUF 0x60
-#define IN_BUF 0x64
 #define STAT_REG 0x64
 #define KBC_CMD_REG 0x64  
 #define BREAK_CODE BIT(7)  

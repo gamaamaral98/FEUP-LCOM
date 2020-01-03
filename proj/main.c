@@ -42,6 +42,7 @@ int (proj_main_loop)(int argc, char *argv[]) {
   //CLEAR BUFFERS
   timer_int_handler();
   kbc_ih();
+  mouse_ih();
 
   //UNSUBSCRIBE DEVICES
   if(unsubscribe() != 0) return 1;

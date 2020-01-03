@@ -12,6 +12,9 @@ Game* start_game(){
     Game* game = (Game*) malloc(sizeof(Game));
     if(game == NULL) return NULL;
 
+    game->cursor_x = 0;
+    game->cursor_y = 0;
+
     //Initializing all the tiles of the game
     for(int x = 0; x < ROW; x++){
 
@@ -82,13 +85,19 @@ void draw_game(Game *game){
 }
 
 int subscribe(Game *game){
-    uint8_t hook_timer, hook_kbd;
+    uint8_t hook_timer, hook_kbd, hook_mouse;
 
     if(timer_subscribe_int(&hook_timer) != 0) return -1;
     if(kbc_subscribe_int(&hook_kbd) != 0) return -1;
+    if(ps2_subscribe_int(&hook_mouse) != 0) return -1;
 
     game->irq_timer = BIT(hook_timer);
     game->irq_kbd = BIT(hook_kbd);
+    game->irq_mouse = BIT(hook_mouse);
+
+    sys_irqdisable(&ps2_hook_id);
+    mouse_enable_disable_data(ENABLE);
+    sys_irqenable(&ps2_hook_id);
 
     return 0;
     
@@ -98,6 +107,10 @@ int unsubscribe(){
 
     if(timer_unsubscribe_int() != 0) return -1;
     if(kbc_unsubscribe_int() != 0) return -1;
+
+    sys_irqdisable(&ps2_hook_id);
+    mouse_enable_disable_data(DISABLE);
+    if(ps2_unsubscribe_int() != 0) return -1;
 
     return 0;
     
@@ -189,8 +202,9 @@ void play_game(Game *game){
     //CHECK FOR INTERRUPTS
     int ipc_status;
 	message msg;
-	int r;
+	int r, index = 0;
     int counter_min = 0, counter_sec = 0, counter_sec_aux = 0;
+    uint8_t mouse_scancodes[3];
 
     //LOAD XPMS
     xpm_image_t img0;
@@ -213,6 +227,8 @@ void play_game(Game *game){
     uint8_t *sprite8 = xpm_load(x8, XPM_INDEXED, &img8);
     xpm_image_t img9;
     uint8_t *sprite9 = xpm_load(x9, XPM_INDEXED, &img9);
+    xpm_image_t cursor_img;
+    uint8_t *sprite_cursor = xpm_load(cross_game, XPM_INDEXED, &cursor_img);
     
     //MIGHT CHANGE THE CONDITION
     while (value != ESC_BREAK_CODE && game->state != 2) {
@@ -288,9 +304,49 @@ void play_game(Game *game){
                             }
                         } else if(game->state == 1){
                             handle_key(game);
+                            printf("%d\n", value_mouse);
                         }
 
                     }
+
+                    //MOUSE INTERRUPT
+                    if(msg.m_notify.interrupts & game->irq_mouse) {
+                        mouse_ih();
+
+                        if(game->state == 0){
+                            mouse_scancodes[index] = value_mouse;
+
+                            index++;
+
+                            if(index == 3){
+
+                                struct packet mouse_packet;
+                                packet_parser(&mouse_packet, mouse_scancodes);
+
+                                index = 0;
+
+                                //int aux_x = game->cursor_x;
+                                //int aux_y = game->cursor_y;
+                                game->cursor_x += mouse_packet.delta_x;
+                                game->cursor_y -= mouse_packet.delta_y;
+
+                                //vg_draw_rectangle(aux_x, aux_y, cursor_img.width, cursor_img.height, 0);
+
+                                draw_sprite(sprite_cursor, cursor_img, game->cursor_x, game->cursor_y);
+
+                                if(mouse_packet.lb && game->cursor_x >= 390 && game->cursor_x < 450 && game->cursor_y >= 300 && game->cursor_y < 399){
+                                    game->state = 1;
+                                    clear_screen();
+                                    draw_game(game);
+                                } else if(mouse_packet.lb && game->cursor_x >= 390 && game->cursor_x < 450 && game->cursor_y >= 400 && game->cursor_y < 500){
+                                    game->state = 2;
+                                    break;
+                                }
+                                
+                            }
+                        }
+                    }
+
                     game_finished(game);
                     break;
                 default:

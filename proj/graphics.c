@@ -18,8 +18,6 @@ static void *video_mem;         /* frame-buffer VM address (static global variab
 
 void clear_screen(){
  
-    //vg_draw_rectangle(0,0,h_res,v_res,0);
-
     uint8_t* video_mem_aux = video_mem;
     unsigned pixel = 0;
     unsigned int number_of_pixels = h_res*v_res;
